@@ -1,0 +1,337 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 520,
+      "max": [
+        1.657507300376892,
+        2.9031882286071777,
+        5.413358211517334
+      ],
+      "min": [
+        -2.223693609237671,
+        -1.6711276769638062,
+        -0.9817751049995422
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 6240,
+      "componentType": 5126,
+      "count": 520,
+      "max": [
+        0.9992422461509705,
+        0.9996063709259033,
+        1.0
+      ],
+      "min": [
+        -0.9987024664878845,
+        -0.9996967315673828,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 520,
+      "max": [
+        0.875,
+        1.0
+      ],
+      "min": [
+        0.125,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 780,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 12480,
+      "componentType": 5126,
+      "count": 240,
+      "max": [
+        2.453075885772705,
+        7.5165815353393555,
+        5.162250995635986
+      ],
+      "min": [
+        -5.8796610832214355,
+        -1.2504408359527588,
+        -4.250302791595459
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 15360,
+      "componentType": 5126,
+      "count": 240,
+      "max": [
+        0.9822462201118469,
+        0.9594138264656067,
+        0.998782217502594
+      ],
+      "min": [
+        -0.9822462201118469,
+        -0.9594138264656067,
+        -0.998782217502594
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 4160,
+      "componentType": 5126,
+      "count": 240,
+      "max": [
+        1.0,
+        0.47238200902938843
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 3120,
+      "componentType": 5125,
+      "count": 240,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "matulinekmaly (https://sketchfab.com/matulinekmaly)",
+      "license": "SKETCHFAB Standard (https://sketchfab.com/licenses)",
+      "source": "https://sketchfab.com/3d-models/low-poly-tree-644423562d8d4ed7aa7344b344159899",
+      "title": "Low-Poly Tree"
+    },
+    "generator": "Sketchfab-16.56.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 4080,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 6080,
+      "byteOffset": 4080,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 18240,
+      "byteOffset": 10160,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 28400,
+      "uri": "tree.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Trunk",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.139328,
+          0.0800974,
+          0.03042,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.9800759372754784
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Leaves",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.0469155,
+          0.198596,
+          0.0371986,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.9654089600636896
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Trunk_Trunk_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Leaves_Leaves_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "65de2c6a746348af926f568f069cc07a.fbx"
+    },
+    {
+      "children": [
+        3,
+        5
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4
+      ],
+      "matrix": [
+        100.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.629206793918314e-05,
+        -99.99999999999868,
+        0.0,
+        0.0,
+        99.99999999999868,
+        -1.629206793918314e-05,
+        0.0,
+        0.0,
+        98.73475646972656,
+        0.0,
+        1.0
+      ],
+      "name": "Trunk"
+    },
+    {
+      "mesh": 0,
+      "name": "Trunk_Trunk_0"
+    },
+    {
+      "children": [
+        6
+      ],
+      "matrix": [
+        45.59761798545373,
+        42.56046152667292,
+        -11.673963943962663,
+        0.0,
+        -37.69624953885507,
+        28.83167528234512,
+        -42.12534677285847,
+        0.0,
+        -22.949233634254472,
+        37.204286942285265,
+        45.9999051991665,
+        0.0,
+        165.43260192871094,
+        600.867431640625,
+        80.25105285644531,
+        1.0
+      ],
+      "name": "Leaves"
+    },
+    {
+      "mesh": 1,
+      "name": "Leaves_Leaves_0"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}
