@@ -13,6 +13,8 @@
     "aframe": "^1.7.1",
     "angle": "^0.9.1",
     "express": "^5.1.0",
+    "ws": "^8.13.0",
+    "node-fetch": "^3.4.2",
     "three": "^0.181.0"
   },
   "devDependencies": {

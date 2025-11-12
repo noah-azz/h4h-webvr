@@ -93,6 +93,52 @@
         </div>
         <iframe src="scenario.html" frameborder="0"></iframe>
     </div>
+
+    <hr>
+    <h3>Quick test</h3>
+    <div style="display:flex; gap:1rem; align-items:center;">
+        <input id="testText" placeholder="Text to send to /events" style="flex:1; padding:0.4rem;" />
+        <button id="sendTest">Send Test Event</button>
+        <button id="startVoice">Start Voice</button>
+        <button id="stopVoice">Stop Voice</button>
+    </div>
+
+    <script>
+        document.getElementById('sendTest').addEventListener('click', async () => {
+            const text = document.getElementById('testText').value || 'Hello from control UI';
+            try {
+                const res = await fetch('/events', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                const j = await res.json();
+                alert('Sent — server returned commands: ' + (j.anim ? JSON.stringify(j.anim.commands || j.anim) : JSON.stringify(j)));
+            } catch (err) {
+                alert('Failed to send test event: ' + err.message);
+            }
+        });
+
+        // WebRTC controls
+        document.getElementById('startVoice').addEventListener('click', async () => {
+            try {
+                await window.webrtcClient.start();
+                alert('Voice started (check mic permission and the scenario page for audio)');
+            } catch (e) {
+                alert('Failed to start voice: ' + e.message);
+            }
+        });
+
+        document.getElementById('stopVoice').addEventListener('click', async () => {
+            try {
+                await window.webrtcClient.stop();
+                alert('Voice stopped');
+            } catch (e) {
+                alert('Failed to stop voice: ' + e.message);
+            }
+        });
+    </script>
+    <script src="/webrtc-client.js"></script>
 </body>
 
 </html>
