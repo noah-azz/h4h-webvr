@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>VR Scenario</title>
+    <style>
+        body {
+            margin: 0
+        }
+    </style>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.0/dist/aframe-extras.min.js"></script>
+</head>
+
+<body>
+    <a-scene stats>
+        <a-assets>
+            <a-asset-item id="tree" src="tree.gltf"></a-asset-item>
+            <a-asset-item id="park" src="scene.gltf"></a-asset-item>
+            <a-asset-item id="emma" src="emma.gltf"></a-asset-item>
+        </a-assets>
+
+        <a-entity meta-touch-controls="hand: left"></a-entity>
+        <a-entity meta-touch-controls="hand: right"></a-entity>
+
+        <a-plane position="0 -0.1 -4" rotation="-90 0 0" width="80" height="80" color="darkgreen"></a-plane>
+        <a-sky color="#88BBFF"></a-sky>
+
+        <a-entity gltf-model="#emma" position="3 0 -2" scale="1.1 1.1 1.1" animation-mixer="clip: idle;"></a-entity>
+
+        <a-gltf-model position="0 0 -5" scale="0.023 0.023 0.023" src="#park"></a-gltf-model>
+    </a-scene>
+</body>
+
+</html>

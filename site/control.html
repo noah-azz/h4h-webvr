@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #content {
+            display: flex;
+            gap: 1rem;
+            height: 70vh;
+        }
+
+        #content>* {
+            width: 50%;
+            border-radius: 8px;
+        }
+
+        #controls button {
+            transition: 0.2s ease-in-out;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            margin: 0 0.2rem;
+        }
+
+        #controls button:hover {
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        #controls #stop {
+            background-color: rgb(255, 74, 74);
+        }
+
+        #transcript {
+            display: flex;
+            flex-direction: column;
+            background-color: lightgray;
+            padding: 0 1rem;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        #transcript span {
+            font-weight: bold;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Scenario Controls</h2>
+
+    <div id="controls">
+        <button>Pause</button>
+        <button id="stop">Stop</button>
+    </div>
+    <h3>Transcript</h3>
+    <div id="content">
+        <div id="transcript">
+            <p><span>User</span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur mattis lorem a leo sodales, id
+                bibendum leo ornare.</p>
+            <p><span>System</span>
+                Ut vitae pharetra lacus. Cras vitae ex quam. Sed mauris lacus, tincidunt nec ultrices id, eleifend eget
+                magna. Nam feugiat ligula quis est varius, eu fermentum diam venenatis.</p>
+            <p><span>User</span>
+                Vestibulum sed leo ut dolor molestie finibus. Nunc feugiat venenatis erat, id tristique nibh auctor id.
+                Nullam congue purus sit amet mi auctor accumsan.
+                Nam in turpis lorem.</p>
+            <p><span>System</span>
+                Vestibulum mi lacus, tempor eu sapien eget, tincidunt tristique odio. Nam volutpat sem non lacus
+                feugiat, eget sollicitudin diam feugiat.</p>
+            <p><span>User</span>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur mattis lorem a leo sodales, id
+                bibendum leo ornare.</p>
+            <p><span>System</span>
+                Ut vitae pharetra lacus. Cras vitae ex quam. Sed mauris lacus, tincidunt nec ultrices id, eleifend eget
+                magna. Nam feugiat ligula quis est varius, eu fermentum diam venenatis.</p>
+            <p><span>User</span>
+                Vestibulum sed leo ut dolor molestie finibus. Nunc feugiat venenatis erat, id tristique nibh auctor id.
+                Nullam congue purus sit amet mi auctor accumsan.
+                Nam in turpis lorem.</p>
+            <p><span>System</span>
+                Vestibulum mi lacus, tempor eu sapien eget, tincidunt tristique odio. Nam volutpat sem non lacus
+                feugiat, eget sollicitudin diam feugiat.</p>
+        </div>
+        <iframe src="scenario.html" frameborder="0"></iframe>
+    </div>
+</body>
+
+</html>
