@@ -1,12 +1,18 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
+const path = require('path');
 
 const app = express();
 
 // serve static site/
 app.use(express.static('site'));
 app.use(express.json());
+
+// Convenience route: serve the new therapist control panel at /control
+app.get('/control', (req, res) => {
+    res.sendFile(path.join(__dirname, 'site', 'control-new.html'));
+});
 
 // Create HTTP server so we can attach a WebSocket server on the same port
 const server = http.createServer(app);
@@ -33,41 +39,111 @@ function broadcastAnimation(command) {
 // generator service (Groq / Llama 70B). For now we stub the animation generator
 // with a deterministic mapper so you can test client behavior locally.
 app.post('/events', (req, res) => {
-    const event = req.body || {};
-    console.log('Received event:', event);
+    try {
+        const event = req.body || {};
+        console.log('Received event:', event);
 
-    // In production: validate event, call your animation generator service,
-    // await result and broadcast the structured animation commands.
-    const anim = generateAnimationCommandsFromEvent(event);
-    broadcastAnimation(anim);
+        // In production: validate event, call your animation generator service,
+        // await result and broadcast the structured animation commands.
+        const anim = generateAnimationCommandsFromEvent(event);
+        broadcastAnimation(anim);
 
-    res.json({ ok: true, forwardedTo: 'stub-animation-generator', anim });
+        res.json({ ok: true, forwardedTo: 'stub-animation-generator', anim });
+    } catch (err) {
+        console.error('Error in /events handler:', err);
+        res.status(500).json({ error: String(err) });
+    }
 });
 
 // Minimal stub that turns text or simple event types into animation commands.
+// Enhanced to support therapist UI: personality, events, and system prompts.
 // Replace this with a call to your Llama 70B / Groq service that returns JSON commands.
 function generateAnimationCommandsFromEvent(event) {
     const text = (event.text || event.message || event.transcript || '').toLowerCase();
+    const personality = event.personality || 'neutral';
+    const events = event.events || [];
+    const systemPrompt = event.systemPrompt || '';
+    const source = event.source || 'unknown';
+
     const commands = [];
 
+    // Determine animation type based on therapist input + personality + events
+    let animationType = 'speak'; // default
+    let gesture = null;
+    let emotion = 'neutral';
+
     if (!text) {
-        commands.push({ target: 'emma-entity', type: 'idle', start: 0 });
+        animationType = 'idle';
+    } else if (events.includes('agent-apologises') || text.includes('sorry') || text.includes('apologise')) {
+        animationType = 'speak';
+        gesture = 'apologetic-bow';
+        emotion = 'remorseful';
+    } else if (events.includes('set-boundary')) {
+        animationType = 'speak';
+        gesture = 'hand-stop';
+        emotion = 'firm';
+    } else if (events.includes('validate-emotion')) {
+        animationType = 'speak';
+        gesture = 'open-hands';
+        emotion = 'caring';
+    } else if (events.includes('celebrate-win')) {
+        animationType = 'speak';
+        gesture = 'celebration';
+        emotion = 'joyful';
+    } else if (personality === 'playful') {
+        animationType = 'speak';
+        emotion = 'happy';
     } else if (text.includes('hello') || text.includes('hi')) {
-        commands.push({ target: 'emma-entity', type: 'speak', visemes: [{ v: 'AA', t: 0 }, { v: 'OH', t: 300 }], audioUrl: null });
-        commands.push({ target: 'emma-entity', type: 'gesture', name: 'wave', start: 0 });
-    } else if (text.includes('angry') || text.includes('upset')) {
-        commands.push({ target: 'emma-entity', type: 'emotion', emotion: 'sad', intensity: 0.8 });
+        animationType = 'speak';
+        gesture = 'wave';
     } else {
-        // default speak command with mock visemes
-        commands.push({ target: 'emma-entity', type: 'speak', visemes: [{ v: 'M', t: 0 }, { v: 'AH', t: 400 }], audioUrl: null });
+        animationType = 'speak';
     }
 
-    return { source: 'stub', original: event, commands };
+    // Build animation commands
+    if (animationType === 'idle') {
+        commands.push({ target: 'emma-entity', type: 'idle', start: 0 });
+    } else {
+        // speak command with mock visemes
+        commands.push({
+            target: 'emma-entity',
+            type: 'speak',
+            visemes: [{ v: 'M', t: 0 }, { v: 'AH', t: 400 }, { v: 'AH', t: 800 }],
+            audioUrl: null
+        });
+
+        if (gesture) {
+            commands.push({ target: 'emma-entity', type: 'gesture', name: gesture, start: 0, duration: 2000 });
+        }
+
+        if (emotion && emotion !== 'neutral') {
+            commands.push({ target: 'emma-entity', type: 'emotion', emotion, intensity: 0.7 });
+        }
+    }
+
+    return {
+        source: 'stub-with-therapist-context',
+        original: event,
+        personality,
+        events,
+        systemPrompt: systemPrompt.substring(0, 500), // truncate for logging
+        commands
+    };
 }
 
 const port = process.env.PORT || 5173;
 server.listen(port, () => {
     console.log(`Listening on http://localhost:${port} (ws path: /anim)`);
+});
+
+// Error handling
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
 // --- OpenAI Realtime helper routes (simple proxy / minting)

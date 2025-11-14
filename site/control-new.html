@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Therapist Control - H4H VR Simulation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 1rem;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            height: 90vh;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            color: #555;
+            margin: 0.8rem 0 0.4rem 0;
+            font-weight: 600;
+        }
+
+        /* --- Personality & Events Panel --- */
+        #personality-section {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .personality-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .personality-btn {
+            padding: 0.6rem 0.9rem;
+            font-size: 0.85rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .personality-btn:hover {
+            border-color: #007bff;
+            background: #f0f7ff;
+        }
+
+        .personality-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .events-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-card {
+            padding: 0.8rem;
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: move;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            text-align: center;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .event-card:hover {
+            border-color: #007bff;
+            background: #f0f7ff;
+            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+        }
+
+        .event-card.dragging {
+            opacity: 0.5;
+        }
+
+        /* --- Prompt & Chat Panel --- */
+        .input-section {
+            flex: 0 0 auto;
+            margin-bottom: 1rem;
+        }
+
+        .prompt-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: 'Segoe UI', sans-serif;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 0.7rem;
+            margin-top: 0.5rem;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            background: #218838;
+        }
+
+        .send-btn:active {
+            transform: scale(0.98);
+        }
+
+        #chat-history {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 0.8rem;
+            background: #fafafa;
+        }
+
+        .chat-message {
+            margin-bottom: 0.8rem;
+            padding: 0.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .chat-message.user {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #1976d2;
+        }
+
+        .chat-message.agent {
+            background: #f3e5f5;
+            color: #6a1b9a;
+            border-left: 4px solid #7b1fa2;
+        }
+
+        .chat-message.system {
+            background: #fff3e0;
+            color: #e65100;
+            border-left: 4px solid #ff6f00;
+            font-size: 0.8rem;
+        }
+
+        .chat-timestamp {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 0.3rem;
+        }
+
+        /* --- Voice & Controls Panel --- */
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .status-box {
+            padding: 0.8rem;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+            font-size: 0.85rem;
+        }
+
+        .status-box.active {
+            border-left-color: #28a745;
+            background: #f0f9f5;
+        }
+
+        .status-box.error {
+            border-left-color: #dc3545;
+            background: #f9f0f3;
+        }
+
+        .drop-zone {
+            min-height: 100px;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            color: #999;
+            background: #fafafa;
+            transition: all 0.2s;
+        }
+
+        .drop-zone.dragover {
+            border-color: #007bff;
+            background: #f0f7ff;
+            color: #007bff;
+        }
+
+        .dropped-events {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .dropped-event {
+            padding: 0.5rem 0.8rem;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .dropped-event .remove {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.6;
+        }
+
+        .dropped-event .remove:hover {
+            opacity: 1;
+        }
+
+        .scenario-frame {
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        .note {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center; color: #333; margin-bottom: 1.5rem;">Therapist Control Panel — VR Simulation</h1>
+
+    <div class="container">
+        <!-- Panel 1: Personality & Events -->
+        <div class="panel">
+            <h2>Personality & Events</h2>
+            <div id="personality-section">
+                <h3>Agent Personality</h3>
+                <div class="personality-buttons">
+                    <button class="personality-btn active" data-personality="empathetic">Empathetic</button>
+                    <button class="personality-btn" data-personality="firm">Firm</button>
+                    <button class="personality-btn" data-personality="playful">Playful</button>
+                    <button class="personality-btn" data-personality="neutral">Neutral</button>
+                </div>
+
+                <h3>Trigger Events (Drag to Apply)</h3>
+                <div class="events-list">
+                    <div class="event-card" draggable="true" data-event="agent-apologises">Agent Apologises</div>
+                    <div class="event-card" draggable="true" data-event="set-boundary">Set Boundary</div>
+                    <div class="event-card" draggable="true" data-event="validate-emotion">Validate Emotion</div>
+                    <div class="event-card" draggable="true" data-event="ask-permission">Ask Permission</div>
+                    <div class="event-card" draggable="true" data-event="celebrate-win">Celebrate Win</div>
+                    <div class="event-card" draggable="true" data-event="reset-session">Reset Session</div>
+                </div>
+
+                <h3>Applied Events</h3>
+                <div class="drop-zone" id="drop-zone">Drop events here to apply</div>
+                <div class="dropped-events" id="dropped-events"></div>
+            </div>
+        </div>
+
+        <!-- Panel 2: Prompt & Chat -->
+        <div class="panel">
+            <h2>Prompt & Conversation</h2>
+
+            <div class="input-section">
+                <h3>Therapist Input (Auto-Translate to Prompt)</h3>
+                <textarea id="therapist-input" class="prompt-input" placeholder="E.g., 'The child is anxious about social situations. Validate their feelings and suggest a coping strategy.'"></textarea>
+                <button class="send-btn" id="send-prompt">Send Prompt to Agent</button>
+                <p class="note">Prompt will be enhanced with selected personality and events.</p>
+            </div>
+
+            <h3>Chat History</h3>
+            <div id="chat-history"></div>
+        </div>
+
+        <!-- Panel 3: Controls & Scenario -->
+        <div class="panel">
+            <h2>Voice Control & Scenario</h2>
+
+            <div class="controls-section">
+                <div>
+                    <h3>Voice Connection</h3>
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="start-voice">Start Voice</button>
+                        <button class="btn btn-danger" id="stop-voice">Stop Voice</button>
+                    </div>
+                    <div class="status-box" id="voice-status">
+                        Status: <strong>Disconnected</strong>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Quick Actions</h3>
+                    <button class="btn btn-secondary" id="pause-scenario">Pause Scenario</button>
+                    <button class="btn btn-secondary" id="reset-scenario">Reset Scenario</button>
+                </div>
+
+                <h3>VR Scenario</h3>
+                <iframe id="scenario-frame" class="scenario-frame" src="scenario.html"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentPersonality = 'empathetic';
+        let droppedEvents = [];
+        let voiceActive = false;
+
+        // Personality descriptions for prompt translation
+        const personalityDescriptions = {
+            empathetic: "You are a warm, empathetic AI therapist. Validate emotions, listen actively, and show genuine care for the user's wellbeing.",
+            firm: "You are a direct, firm AI therapist. Set clear boundaries, encourage accountability, and maintain professional limits while being supportive.",
+            playful: "You are a friendly, playful AI therapist with age-appropriate humor. Use lightness to ease tension while maintaining therapeutic goals.",
+            neutral: "You are a balanced, professional AI therapist. Maintain neutrality, ask clarifying questions, and guide the user with evidence-based techniques."
+        };
+
+        const eventPrompts = {
+            'agent-apologises': "Please apologise sincerely for something. Acknowledge the impact of your words or actions, and commit to change.",
+            'set-boundary': "Gently but firmly set a healthy boundary. Explain why it's important and offer an alternative way to help.",
+            'validate-emotion': "Validate the user's emotional experience. Acknowledge their feelings as real and understandable.",
+            'ask-permission': "Before offering advice or intervention, ask for permission first. Respect the user's autonomy.",
+            'celebrate-win': "Celebrate a success or progress the user has made. Be enthusiastic and specific about what they did well.",
+            'reset-session': "Suggest starting fresh. Offer a brief reset exercise or mental pause to recenter the session."
+        };
+
+        // === Personality Selection ===
+        document.querySelectorAll('.personality-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.personality-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPersonality = btn.dataset.personality;
+                addChatMessage('system', `Personality switched to: ${currentPersonality}`);
+            });
+        });
+
+        // === Drag & Drop Events ===
+        const dropZone = document.getElementById('drop-zone');
+        const droppedEventsContainer = document.getElementById('dropped-events');
+
+        document.querySelectorAll('.event-card').forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', card.dataset.event);
+                card.classList.add('dragging');
+            });
+
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+            });
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const eventId = e.dataTransfer.getData('text/plain');
+            if (!droppedEvents.includes(eventId)) {
+                droppedEvents.push(eventId);
+                renderDroppedEvents();
+            }
+        });
+
+        function renderDroppedEvents() {
+            droppedEventsContainer.innerHTML = droppedEvents.map(eventId => {
+                const label = document.querySelector(`[data-event="${eventId}"]`)?.textContent || eventId;
+                return `<div class="dropped-event">${label} <span class="remove" onclick="removeDroppedEvent('${eventId}')">×</span></div>`;
+            }).join('');
+        }
+
+        window.removeDroppedEvent = (eventId) => {
+            droppedEvents = droppedEvents.filter(e => e !== eventId);
+            renderDroppedEvents();
+        };
+
+        // === Prompt Translation ===
+        async function buildAndSendPrompt() {
+            const therapistInput = document.getElementById('therapist-input').value.trim();
+            if (!therapistInput) {
+                alert('Please enter a therapist input');
+                return;
+            }
+
+            // Build the system prompt
+            const personalityDescription = personalityDescriptions[currentPersonality];
+            const eventInstructions = droppedEvents.map(e => eventPrompts[e]).join('\n');
+
+            const systemPrompt = [
+                personalityDescription,
+                therapistInput,
+                eventInstructions && `\nAdditional instructions:\n${eventInstructions}`
+            ].filter(Boolean).join('\n\n');
+
+            addChatMessage('user', `Therapist input:\n"${therapistInput}"\nPersonality: ${currentPersonality}${droppedEvents.length > 0 ? '\nEvents: ' + droppedEvents.join(', ') : ''}`);
+
+            // Send to server /events endpoint
+            try {
+                const res = await fetch('/events', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        transcript: therapistInput,
+                        systemPrompt: systemPrompt,
+                        personality: currentPersonality,
+                        events: droppedEvents,
+                        source: 'therapist-ui'
+                    })
+                });
+
+                const data = await res.json();
+                addChatMessage('system', `Server processed event. Commands: ${data.anim?.commands?.length || 0} animation(s)`);
+
+                // Clear input
+                document.getElementById('therapist-input').value = '';
+                droppedEvents = [];
+                renderDroppedEvents();
+            } catch (err) {
+                addChatMessage('system', `Error: ${err.message}`);
+            }
+        }
+
+        document.getElementById('send-prompt').addEventListener('click', buildAndSendPrompt);
+        document.getElementById('therapist-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) buildAndSendPrompt();
+        });
+
+        // === Chat History ===
+        function addChatMessage(role, text) {
+            const chatHistory = document.getElementById('chat-history');
+            const msg = document.createElement('div');
+            msg.className = `chat-message ${role}`;
+            const time = new Date().toLocaleTimeString();
+            msg.innerHTML = `${text}<div class="chat-timestamp">${time}</div>`;
+            chatHistory.appendChild(msg);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // === Voice Control ===
+        document.getElementById('start-voice').addEventListener('click', async () => {
+            try {
+                await window.webrtcClient.start();
+                voiceActive = true;
+                updateVoiceStatus('Connected', true);
+                addChatMessage('system', 'Voice started. Listening for input...');
+            } catch (err) {
+                updateVoiceStatus(`Error: ${err.message}`, false);
+                addChatMessage('system', `Voice error: ${err.message}`);
+            }
+        });
+
+        document.getElementById('stop-voice').addEventListener('click', async () => {
+            try {
+                await window.webrtcClient.stop();
+                voiceActive = false;
+                updateVoiceStatus('Disconnected', false);
+                addChatMessage('system', 'Voice stopped.');
+            } catch (err) {
+                addChatMessage('system', `Stop error: ${err.message}`);
+            }
+        });
+
+        function updateVoiceStatus(text, isActive) {
+            const box = document.getElementById('voice-status');
+            box.innerHTML = `Status: <strong>${text}</strong>`;
+            if (isActive) {
+                box.classList.add('active');
+            } else {
+                box.classList.remove('active');
+            }
+        }
+
+        // === Scenario Controls ===
+        document.getElementById('pause-scenario').addEventListener('click', () => {
+            addChatMessage('system', 'Scenario paused.');
+        });
+
+        document.getElementById('reset-scenario').addEventListener('click', () => {
+            droppedEvents = [];
+            renderDroppedEvents();
+            document.getElementById('therapist-input').value = '';
+            addChatMessage('system', 'Scenario reset. Ready for new session.');
+        });
+
+        // Initial message
+        addChatMessage('system', 'Therapist Control Panel loaded. Select personality, configure events, and send prompts to the agent.');
+    </script>
+    <script src="/webrtc-client.js"></script>
+</body>
+
+</html>

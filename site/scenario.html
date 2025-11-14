@@ -27,12 +27,11 @@
         <a-plane position="0 -0.1 -4" rotation="-90 0 0" width="80" height="80" color="darkgreen"></a-plane>
         <a-sky color="#88BBFF"></a-sky>
 
+    <!-- Single instance of the avatar. Remove duplicates to avoid split/multiple models -->
     <a-entity id="emma-entity" gltf-model="#emma" position="3 0 -2" scale="1.1 1.1 1.1" animation-mixer="clip: idle;"></a-entity>
 
-        <a-gltf-model position="0 0 -5" scale="0.023 0.023 0.023" src="#park"></a-gltf-model>
-        <a-entity gltf-model="#emma" position="3 0 -2" scale="1.1 1.1 1.1" animation-mixer="clip: idle;"></a-entity>
-
-        <a-gltf-model position="0 0 -5" scale="0.023 0.023 0.023" src="#park"></a-gltf-model>
+    <!-- Park model (single instance) -->
+    <a-gltf-model position="0 0 -5" scale="0.023 0.023 0.023" src="#park"></a-gltf-model>
     </a-scene>
     <!-- Debug overlay to display incoming animation messages -->
     <div id="ai-debug" style="position:fixed; right:0; top:0; max-width:320px; background:rgba(0,0,0,0.6); color:#fff; padding:0.6rem; font-family:monospace; font-size:12px; z-index:9999; max-height:40vh; overflow:auto;">
